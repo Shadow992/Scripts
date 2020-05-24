@@ -8,7 +8,7 @@ getMilliSeconds()
 // A function to log messages into the SpaceSharp Script-Logging-Window
 log(string logMsg)
 
-// Clears Log WIndow
+// Clears Log Window
 clearLogs()
 
 // Returns the percentage health of the player
@@ -80,26 +80,70 @@ getChampionStats()
 // Returns current player health% as double
 getCurrentHealth()
 
-// Returns user screen dimensions as array
+// Converts ingame range to range in pixels 
+convertIngameRangeToRangeInPixel(int ingameRange)
+
+// Checks whether an given point (x,y) is in given range while kiting (e.g. useful for checking if speel will hit enemy)
+// width is the width of the hitbox in pixels and height the height of hitbox in pixels
+isInRangeWhileKiting(int x, int y, int range, int width = 1, int height = 1)
+
+// Returns the dimensions of the screen as {"width": value, "height": value}
 getScreenDimensions()
 
-// TODO 
-getMinions()
+// Searches for a given color (red, green, blue) on screen with respect to some tolerance. Therefore the color can slightly differ
+// startX and startY are the start position of pixel search, where width and height are the width and height of the area to search through
+// returns only one found pixel at a time as [x,y] array
+// If pixel was not found, will return [-1,-1]
+searchPixel(int red, int green, int blue, int tolerance = 0, int startX = 0, int startY = 0, int width = -1, int height = -1)
 
-// TODO
+// This function allows to check whether a point (or rectangle if width and height >1) lies inside of the attack range ellipse
+// centerEllipseX and centerEllipseY is the center point of the ellipse
+// range is the ingame range
+// x and y is the point to check whether it lies inside the ellipse (if using rectangle, x and y describe the top left corner of rectangle)
+isInRange(int centerEllipseX, int centerEllipseY, int range, int x, int y, int width = 1, int height = 1)
+
+// Gets the color at a given x,y position of image (care it is quite slow and the image may change between two consecutive calls due to next image was caught in buffer)
+// Returns: {"r": value, "b":value, "g":value}
+getPixelColor(int x, int y)
+
+// Returns all enemy champs found on screen. This function is quite fast as it retrieves the champs from an internal buffer.
+// However use with care as the data provided by this function may be up to ~200ms old. 
+// It will definitely most of the time not work if you click on an enemy champion based on the returned values in this function!
+// You should better add some kind of pixelSearch or similar of HP bar afterwards and find the enemy closest to the position returned by this function to make sure you got the latest position of enemy!
+// the return value will look like this:
+/*
+[
+	{
+		"hpPercentage": 0.3,
+		"x": 123,
+		"y": 452,
+		"xHp": 182,   // x position of very left point in hp bar
+		"yHp": 473
+	},
+	// ... next enemy
+]
+*/
 getEnemyChamps()
 
-// TODO 
-getPixelColor()
-
-// TODO
-isInRange()
-
-// TODO
-isInRangeWhileKiting()
-
-// TODO
-searchPixel()
+// Returns all minions found on screen. This function is quite fast as it retrieves the minions from an internal buffer.
+// However use with care as the data provided by this function may be up to ~200ms old. 
+// It will definitely most of the time not work if you click on a minion based on the returned values in this function!
+// You should better add some kind of pixelSearch or similar of minion HP bar (restricting it to the area you found enemy) afterwards and find the minion closest to the position returned by this function to make sure you got the latest position of minion!
+// the return value will look like this:
+/*
+[
+	{
+		"hpPercentage": 0.3,
+		"x": 123,
+		"y": 452,
+		"xHp": 182,  // x position of very left point in hp bar
+		"yHp": 473,
+		"isLastHitable": true  // if true minion will die if player uses simple auto attack on it
+	},
+	// ... next minion
+]
+*/
+getMinions()
 
 
 // Returns pixel per ingame unit
